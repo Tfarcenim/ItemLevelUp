@@ -1,5 +1,5 @@
 {
-  "item": "minecraft:wooden_pickaxe",
+  "item": "minecraft:stone_sword",
   "provider": {
     "max_level": 255,
     "scale": {
@@ -9,7 +9,7 @@
       }
     },
     "valid_actions": [
-      "mine_block"
+      "attack"
     ]
   }
 }

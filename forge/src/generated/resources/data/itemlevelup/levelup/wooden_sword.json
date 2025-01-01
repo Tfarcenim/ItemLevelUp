@@ -1,6 +1,7 @@
 {
   "item": "minecraft:wooden_sword",
   "provider": {
+    "max_level": 255,
     "scale": {
       "type": "linear",
       "config": {

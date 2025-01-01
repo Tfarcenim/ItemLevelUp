@@ -1,5 +1,5 @@
 {
-  "item": "minecraft:wooden_pickaxe",
+  "item": "minecraft:diamond_shovel",
   "provider": {
     "max_level": 255,
     "scale": {

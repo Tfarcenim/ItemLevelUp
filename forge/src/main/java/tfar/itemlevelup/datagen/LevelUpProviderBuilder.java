@@ -35,6 +35,11 @@ public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends Sc
         return this;
     }
 
+    public LevelUpProviderBuilder<SC,ST> maxLevel(int level) {
+        infoBuilder.maxLevel = level;
+        return this;
+    }
+
     public void build(Consumer<FinishedLevelUpInfo> consumer,ResourceLocation location) {
         consumer.accept(new Result(location,item,infoBuilder));
     }

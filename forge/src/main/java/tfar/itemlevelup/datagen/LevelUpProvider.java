@@ -4,10 +4,12 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,18 +73,55 @@ public class LevelUpProvider implements DataProvider {
     }
 
     protected void registerInfos(Consumer<FinishedLevelUpInfo> consumer) {
-        ConfiguredScale<QuadraticScaleConfiguration,QuadraticScaleType> basicQuadratic = new ConfiguredScale<>(ScaleTypes.QUADRATIC,new QuadraticScaleConfiguration(1,0,0));
+        simpleTool(consumer,Items.GOLDEN_AXE);
+        simpleTool(consumer,Items.GOLDEN_PICKAXE);
+        simpleTool(consumer,Items.GOLDEN_SHOVEL);
+        simpleSword(consumer,Items.GOLDEN_SWORD);
 
+        simpleTool(consumer,Items.WOODEN_AXE);
+        simpleTool(consumer,Items.WOODEN_PICKAXE);
+        simpleTool(consumer,Items.WOODEN_SHOVEL);
+        simpleSword(consumer,Items.WOODEN_SWORD);
+
+        simpleTool(consumer,Items.STONE_AXE);
+        simpleTool(consumer,Items.STONE_PICKAXE);
+        simpleTool(consumer,Items.STONE_SHOVEL);
+        simpleSword(consumer,Items.STONE_SWORD);
+
+        simpleTool(consumer,Items.IRON_AXE);
+        simpleTool(consumer,Items.IRON_PICKAXE);
+        simpleTool(consumer,Items.IRON_SHOVEL);
+        simpleSword(consumer,Items.IRON_SWORD);
+
+        simpleTool(consumer,Items.DIAMOND_AXE);
+        simpleTool(consumer,Items.DIAMOND_PICKAXE);
+        simpleTool(consumer,Items.DIAMOND_SHOVEL);
+        simpleSword(consumer,Items.DIAMOND_SWORD);
+
+        simpleTool(consumer,Items.NETHERITE_AXE);
+        simpleTool(consumer,Items.NETHERITE_PICKAXE);
+        simpleTool(consumer,Items.NETHERITE_SHOVEL);
+        simpleSword(consumer,Items.NETHERITE_SWORD);
+    }
+
+    protected void simpleTool(Consumer<FinishedLevelUpInfo> consumer,Item item) {
+        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
         ConfiguredScale<LinearScaleConfiguration, LinearScaleType> basicLinear = new ConfiguredScale<>(ScaleTypes.LINEAR,new LinearScaleConfiguration(10,0));
 
-        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(Items.WOODEN_PICKAXE)
+        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(item)
                 .addActions(Action.MINE_BLOCK)
                 .withConfig(basicLinear)
-                .build(consumer, ItemLevelUp.id("wooden_pickaxe"));
+                .build(consumer, ItemLevelUp.id(path));
+    }
 
-        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(Items.WOODEN_SWORD)
+    protected void simpleSword(Consumer<FinishedLevelUpInfo> consumer,Item item) {
+        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
+        ConfiguredScale<LinearScaleConfiguration, LinearScaleType> basicLinear = new ConfiguredScale<>(ScaleTypes.LINEAR,new LinearScaleConfiguration(10,0));
+
+        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(item)
                 .addActions(Action.ATTACK)
                 .withConfig(basicLinear)
-                .build(consumer, ItemLevelUp.id("wooden_sword"));
+                .build(consumer, ItemLevelUp.id(path));
     }
+
 }

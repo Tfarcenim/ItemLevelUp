@@ -1,5 +1,5 @@
 {
-  "item": "minecraft:wooden_pickaxe",
+  "item": "minecraft:stone_axe",
   "provider": {
     "max_level": 255,
     "scale": {

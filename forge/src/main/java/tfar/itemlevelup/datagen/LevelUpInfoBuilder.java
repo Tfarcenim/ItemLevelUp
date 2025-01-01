@@ -14,6 +14,7 @@ import java.util.Set;
 public class LevelUpInfoBuilder<SC extends ScaleConfiguration, ST extends ScaleType<SC>> {
     Set<Action> validActions = new HashSet<>();
     ConfiguredScale<SC,ST> configuredScale;
+    int maxLevel = 255;
 
     JsonObject toJson() {
         JsonObject object = new JsonObject();
@@ -26,6 +27,7 @@ public class LevelUpInfoBuilder<SC extends ScaleConfiguration, ST extends ScaleT
         JsonObject configObj = configuredScale.toJson();
 
         object.add(LevelUpInfo.SCALE,configObj);
+        object.addProperty(LevelUpInfo.MAX_LEVEL,maxLevel);
         return object;
     }
 

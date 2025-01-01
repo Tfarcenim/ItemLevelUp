@@ -63,12 +63,12 @@ public class ItemLevelUpForge {
 
     static void addXp(LevelUpInfo info,ItemStack stack,long xp) {
         int level = PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY);
-        if (level < LevelUpInfo.MAX) {
+        if (level < info.maxLevel()) {
             PoorMansDataComponents.incrementLong(stack, Constants.XP_KEY,xp);
             long required = info.scale().compute(level+1);
             long exp =PoorMansDataComponents.getOrDefaultJ(stack,Constants.XP_KEY);
             long leftover = exp - required;
-            while (leftover >= 0 && level < LevelUpInfo.MAX) {
+            while (leftover >= 0 && level < info.maxLevel()) {
                 if (leftover < required) {
                     stack.getOrCreateTag().putLong(Constants.XP_KEY,leftover);
                 }
