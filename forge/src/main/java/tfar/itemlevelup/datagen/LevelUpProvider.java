@@ -15,8 +15,8 @@ import tfar.itemlevelup.ItemLevelUp;
 import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.LevelUpManager;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
-import tfar.itemlevelup.data.scales.QuadraticScaleConfiguration;
-import tfar.itemlevelup.data.scales.QuadraticScaleType;
+import tfar.itemlevelup.data.scales.config.QuadraticScaleConfiguration;
+import tfar.itemlevelup.data.scales.types.QuadraticScaleType;
 import tfar.itemlevelup.data.scales.ScaleTypes;
 
 import java.nio.file.Path;

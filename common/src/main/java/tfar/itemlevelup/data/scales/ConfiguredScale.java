@@ -5,7 +5,7 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import tfar.itemlevelup.ItemLevelUp;
 
-public record ConfiguredScale<SC extends ScaleConfiguration, ST extends ScaleType<SC>>(ST scaleType, SC config)  {
+public record ConfiguredScale<SC, ST extends ScaleType<SC>>(ST scaleType, SC config)  {
 
     public JsonObject toJson() {
         JsonObject object = (JsonObject) scaleType.configuredCodec().encodeStart(JsonOps.INSTANCE, (ConfiguredScale<SC, ScaleType<SC>>) this).resultOrPartial(ItemLevelUp.LOG::error).get();

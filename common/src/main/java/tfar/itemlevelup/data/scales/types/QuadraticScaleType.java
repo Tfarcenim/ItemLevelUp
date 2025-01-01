@@ -1,8 +1,10 @@
-package tfar.itemlevelup.data.scales;
+package tfar.itemlevelup.data.scales.types;
 
 import com.mojang.serialization.Codec;
+import tfar.itemlevelup.data.scales.ScaleType;
+import tfar.itemlevelup.data.scales.config.QuadraticScaleConfiguration;
 
-public class QuadraticScaleType extends ScaleType<QuadraticScaleConfiguration>{
+public class QuadraticScaleType extends ScaleType<QuadraticScaleConfiguration> {
     public QuadraticScaleType(Codec<QuadraticScaleConfiguration> pCodec) {
         super(pCodec);
     }

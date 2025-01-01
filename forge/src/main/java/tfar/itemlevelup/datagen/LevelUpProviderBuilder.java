@@ -6,13 +6,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
-import tfar.itemlevelup.data.scales.ScaleConfiguration;
 import tfar.itemlevelup.data.scales.ScaleType;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends ScaleType<SC>> {
+public class LevelUpProviderBuilder<SC, ST extends ScaleType<SC>> {
 
     private final Item item;
     private final LevelUpInfoBuilder<SC,ST> infoBuilder = new LevelUpInfoBuilder<>();
@@ -21,7 +20,7 @@ public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends Sc
         this.item = item;
     }
 
-    public static <SC extends ScaleConfiguration, ST extends ScaleType<SC>> LevelUpProviderBuilder<SC,ST> createLevelUp(Item item) {
+    public static <SC, ST extends ScaleType<SC>> LevelUpProviderBuilder<SC,ST> createLevelUp(Item item) {
         return new LevelUpProviderBuilder<>(item);
     }
 
