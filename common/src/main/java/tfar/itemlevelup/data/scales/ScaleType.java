@@ -13,7 +13,11 @@ public abstract class ScaleType<SC extends ScaleConfiguration> {
         }, ConfiguredScale::config).codec();
     }
 
-    public abstract long compute(SC pConfig,long value);
+    public Codec<ConfiguredScale<SC, ScaleType<SC>>> configuredCodec() {
+        return configuredCodec;
+    }
+
+    public abstract long compute(SC pConfig, long value);
 
 
 }

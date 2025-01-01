@@ -5,25 +5,33 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import tfar.itemlevelup.data.Action;
+import tfar.itemlevelup.data.scales.ConfiguredScale;
+import tfar.itemlevelup.data.scales.ScaleConfiguration;
+import tfar.itemlevelup.data.scales.ScaleType;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class LevelUpProviderBuilder {
+public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends ScaleType<SC>> {
 
     private final Item item;
-    private final LevelUpInfoBuilder infoBuilder = new LevelUpInfoBuilder();
+    private final LevelUpInfoBuilder<SC,ST> infoBuilder = new LevelUpInfoBuilder<>();
 
     public LevelUpProviderBuilder(Item item) {
         this.item = item;
     }
 
-    public static LevelUpProviderBuilder createLevelUp(Item item) {
-        return new LevelUpProviderBuilder(item);
+    public static <SC extends ScaleConfiguration, ST extends ScaleType<SC>> LevelUpProviderBuilder<SC,ST> createLevelUp(Item item) {
+        return new LevelUpProviderBuilder<>(item);
     }
 
-    public LevelUpProviderBuilder addActions(Action... actions) {
+    public LevelUpProviderBuilder<SC,ST> addActions(Action... actions) {
         infoBuilder.validActions.addAll(List.of(actions));
+        return this;
+    }
+
+    public LevelUpProviderBuilder<SC,ST> withConfig(ConfiguredScale<SC,ST> configuredScale) {
+        infoBuilder.configuredScale = configuredScale;
         return this;
     }
 

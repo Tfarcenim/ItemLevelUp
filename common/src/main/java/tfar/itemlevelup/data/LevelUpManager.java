@@ -40,7 +40,7 @@ public class LevelUpManager extends SimpleJsonResourceReloadListener {
                     continue;
                 }
                 levelUpProviders.put(provider.getFirst(),provider.getSecond());
-            } catch (IllegalArgumentException | JsonParseException jsonparseexception) {
+            } catch (Exception jsonparseexception) {
                 LOGGER.error("Parsing error loading provider {}", resourcelocation, jsonparseexception);
             }
         }

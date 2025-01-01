@@ -14,6 +14,10 @@ import org.apache.logging.log4j.Logger;
 import tfar.itemlevelup.ItemLevelUp;
 import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.LevelUpManager;
+import tfar.itemlevelup.data.scales.ConfiguredScale;
+import tfar.itemlevelup.data.scales.QuadraticScaleConfiguration;
+import tfar.itemlevelup.data.scales.QuadraticScaleType;
+import tfar.itemlevelup.data.scales.ScaleTypes;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -65,7 +69,11 @@ public class LevelUpProvider implements DataProvider {
     }
 
     protected void registerInfos(Consumer<FinishedLevelUpInfo> consumer) {
-        LevelUpProviderBuilder.createLevelUp(Items.WOODEN_PICKAXE).addActions(Action.MINE_BLOCK).build(consumer, ItemLevelUp.id("wooden_pickaxe"));
-        LevelUpProviderBuilder.createLevelUp(Items.WOODEN_SWORD).addActions(Action.ATTACK).build(consumer,ItemLevelUp.id("wooden_sword"));
+        ConfiguredScale<QuadraticScaleConfiguration,QuadraticScaleType> basicQuadratic = new ConfiguredScale<>(ScaleTypes.QUADRATIC,new QuadraticScaleConfiguration(1,0,0));
+        LevelUpProviderBuilder.<QuadraticScaleConfiguration,QuadraticScaleType>createLevelUp(Items.WOODEN_PICKAXE)
+                .addActions(Action.MINE_BLOCK)
+                .withConfig(basicQuadratic)
+                .build(consumer, ItemLevelUp.id("wooden_pickaxe"));
+       // LevelUpProviderBuilder.createLevelUp(Items.WOODEN_SWORD).addActions(Action.ATTACK).build(consumer,ItemLevelUp.id("wooden_sword"));
     }
 }
