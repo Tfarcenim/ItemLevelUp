@@ -15,7 +15,9 @@ import tfar.itemlevelup.ItemLevelUp;
 import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.LevelUpManager;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
+import tfar.itemlevelup.data.scales.config.LinearScaleConfiguration;
 import tfar.itemlevelup.data.scales.config.QuadraticScaleConfiguration;
+import tfar.itemlevelup.data.scales.types.LinearScaleType;
 import tfar.itemlevelup.data.scales.types.QuadraticScaleType;
 import tfar.itemlevelup.data.scales.ScaleTypes;
 
@@ -70,10 +72,17 @@ public class LevelUpProvider implements DataProvider {
 
     protected void registerInfos(Consumer<FinishedLevelUpInfo> consumer) {
         ConfiguredScale<QuadraticScaleConfiguration,QuadraticScaleType> basicQuadratic = new ConfiguredScale<>(ScaleTypes.QUADRATIC,new QuadraticScaleConfiguration(1,0,0));
-        LevelUpProviderBuilder.<QuadraticScaleConfiguration,QuadraticScaleType>createLevelUp(Items.WOODEN_PICKAXE)
+
+        ConfiguredScale<LinearScaleConfiguration, LinearScaleType> basicLinear = new ConfiguredScale<>(ScaleTypes.LINEAR,new LinearScaleConfiguration(10,0));
+
+        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(Items.WOODEN_PICKAXE)
                 .addActions(Action.MINE_BLOCK)
-                .withConfig(basicQuadratic)
+                .withConfig(basicLinear)
                 .build(consumer, ItemLevelUp.id("wooden_pickaxe"));
-       // LevelUpProviderBuilder.createLevelUp(Items.WOODEN_SWORD).addActions(Action.ATTACK).build(consumer,ItemLevelUp.id("wooden_sword"));
+
+        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(Items.WOODEN_SWORD)
+                .addActions(Action.ATTACK)
+                .withConfig(basicLinear)
+                .build(consumer, ItemLevelUp.id("wooden_sword"));
     }
 }

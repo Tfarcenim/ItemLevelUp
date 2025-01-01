@@ -1,5 +1,12 @@
 package tfar.itemlevelup.platform.services;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import tfar.itemlevelup.network.client.S2CModPacket;
+import tfar.itemlevelup.network.server.C2SModPacket;
+
+import java.util.function.Function;
+
 public interface IPlatformHelper {
 
     /**
@@ -33,4 +40,8 @@ public interface IPlatformHelper {
 
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+    <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
+    <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
+    void sendToClient(S2CModPacket msg, ServerPlayer player);
+    void sendToServer(C2SModPacket msg);
 }

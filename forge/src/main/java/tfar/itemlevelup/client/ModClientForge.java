@@ -6,6 +6,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import tfar.itemlevelup.Constants;
+import tfar.itemlevelup.PoorMansDataComponents;
+import tfar.itemlevelup.data.LevelUpInfo;
 
 import java.util.List;
 
@@ -17,8 +19,16 @@ public class ModClientForge {
     static void tooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         List<Component> tooltips = event.getToolTip();
-        if (stack.hasTag() && stack.getTag().contains(Constants.XP_KEY)) {
-           tooltips.add(Component.literal("XP :" + stack.getTag().getInt(Constants.XP_KEY)));
+
+        LevelUpInfo levelUpInfo = ClientPacketHandler.MAP.get(stack.getItem());
+
+        if (levelUpInfo != null) {
+            int level =  PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY);
+            if (level < LevelUpInfo.MAX) {
+                long nextRequirement = levelUpInfo.scale().compute(level + 1);
+                tooltips.add(Component.literal("XP : " + PoorMansDataComponents.getOrDefaultJ(stack, Constants.XP_KEY) +" / "+ nextRequirement));
+            }
+            tooltips.add(Component.literal("Level : " + level));
         }
     }
 }

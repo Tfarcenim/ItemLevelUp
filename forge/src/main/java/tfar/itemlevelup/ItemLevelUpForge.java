@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -20,6 +21,8 @@ import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.LevelUpInfo;
 import tfar.itemlevelup.data.LevelUpManager;
 import tfar.itemlevelup.datagen.ModDatagen;
+import tfar.itemlevelup.network.client.S2CLevelUpInfoPacket;
+import tfar.itemlevelup.platform.Services;
 
 @Mod(ItemLevelUp.MOD_ID)
 public class ItemLevelUpForge {
@@ -34,6 +37,7 @@ public class ItemLevelUpForge {
         MinecraftForge.EVENT_BUS.addListener(this::reload);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onBlockBreak);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onAttack);
+        MinecraftForge.EVENT_BUS.addListener(this::onDataSync);
         bus.addListener(ModDatagen::gather);
         if (FMLEnvironment.dist.isClient()) {
             ModClientForge.init(bus);
@@ -52,9 +56,32 @@ public class ItemLevelUpForge {
 
         if (levelUpInfo != null) {
             if (levelUpInfo.validActions().contains(Action.MINE_BLOCK)) {
-                PoorMansDataComponents.incrementLong(stack,Constants.XP_KEY);
+                addXp(levelUpInfo,stack,1);
             }
         }
+    }
+
+    static void addXp(LevelUpInfo info,ItemStack stack,long xp) {
+        int level = PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY);
+        if (level < LevelUpInfo.MAX) {
+            PoorMansDataComponents.incrementLong(stack, Constants.XP_KEY,xp);
+            long required = info.scale().compute(level+1);
+            long exp =PoorMansDataComponents.getOrDefaultJ(stack,Constants.XP_KEY);
+            long leftover = exp - required;
+            while (leftover >= 0 && level < LevelUpInfo.MAX) {
+                if (leftover < required) {
+                    stack.getOrCreateTag().putLong(Constants.XP_KEY,leftover);
+                }
+                leftover = leftover - required;
+                required = info.scale().compute(level+1);
+                level++;
+            }
+            stack.getOrCreateTag().putInt(Constants.LEVEL_KEY,level);
+        }
+    }
+
+    void onDataSync(OnDatapackSyncEvent event) {
+        Services.PLATFORM.sendToClient(new S2CLevelUpInfoPacket(ItemLevelUp.manager.getLevelUpProviders()),event.getPlayer());
     }
 
     void onAttack(LivingDamageEvent event) {
@@ -66,7 +93,7 @@ public class ItemLevelUpForge {
 
             if (levelUpInfo != null) {
                 if (levelUpInfo.validActions().contains(Action.ATTACK)) {
-                    PoorMansDataComponents.incrementLong(stack,Constants.XP_KEY);
+                    addXp(levelUpInfo,stack,1);
                 }
             }
         }
