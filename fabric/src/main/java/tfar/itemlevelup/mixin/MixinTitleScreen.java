@@ -1,6 +1,6 @@
-package com.example.examplemod.mixin;
+package tfar.itemlevelup.mixin;
 
-import com.example.examplemod.CommonClass;
+import tfar.itemlevelup.ItemLevelUp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ public class MixinTitleScreen {
     @Inject(at = @At("HEAD"), method = "init()V")
     private void init(CallbackInfo info) {
         
-        CommonClass.LOG.info("This line is printed by an example mod mixin from Fabric!");
-        CommonClass.LOG.info("MC Version: {}", Minecraft.getInstance().getVersionType());
+        ItemLevelUp.LOG.info("This line is printed by an example mod mixin from Fabric!");
+        ItemLevelUp.LOG.info("MC Version: {}", Minecraft.getInstance().getVersionType());
     }
 }

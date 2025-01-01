@@ -1,6 +1,6 @@
-package com.example.examplemod.platform;
+package tfar.itemlevelup.platform;
 
-import com.example.examplemod.platform.services.IPlatformHelper;
+import tfar.itemlevelup.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 
