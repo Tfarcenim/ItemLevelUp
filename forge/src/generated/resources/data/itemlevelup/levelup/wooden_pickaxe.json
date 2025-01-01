@@ -1,0 +1,8 @@
+{
+  "item": "minecraft:wooden_pickaxe",
+  "provider": {
+    "valid_actions": [
+      "mine_block"
+    ]
+  }
+}
