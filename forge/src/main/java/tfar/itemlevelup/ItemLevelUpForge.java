@@ -1,11 +1,14 @@
 package tfar.itemlevelup;
 
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -31,6 +34,7 @@ public class ItemLevelUpForge {
         // Use Forge to bootstrap the Common mod.
         MinecraftForge.EVENT_BUS.addListener(this::reload);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onBlockBreak);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onAttack);
         bus.addListener(ModDatagen::gather);
         if (FMLEnvironment.dist.isClient()) {
             ModClientForge.init(bus);
@@ -54,6 +58,20 @@ public class ItemLevelUpForge {
         }
     }
 
+    void onAttack(LivingDamageEvent event) {
+        DamageSource source = event.getSource();
+        Entity attacker = source.getEntity();
+        if (attacker instanceof Player player) {
+            ItemStack stack = player.getMainHandItem();
+            LevelUpInfo levelUpInfo = ItemLevelUp.manager.getLevelUpProviders().get(stack.getItem());
+
+            if (levelUpInfo != null) {
+                if (levelUpInfo.validActions().contains(Action.ATTACK)) {
+                    PoorMansDataComponents.incrementLong(stack,Constants.XP_KEY);
+                }
+            }
+        }
+    }
 
     private void reload(AddReloadListenerEvent event) {
         event.addListener(ItemLevelUp.manager = new LevelUpManager());

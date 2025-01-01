@@ -66,5 +66,6 @@ public class LevelUpProvider implements DataProvider {
 
     protected void registerInfos(Consumer<FinishedLevelUpInfo> consumer) {
         LevelUpProviderBuilder.createLevelUp(Items.WOODEN_PICKAXE).addActions(Action.MINE_BLOCK).build(consumer, ItemLevelUp.id("wooden_pickaxe"));
+        LevelUpProviderBuilder.createLevelUp(Items.WOODEN_SWORD).addActions(Action.ATTACK).build(consumer,ItemLevelUp.id("wooden_sword"));
     }
 }

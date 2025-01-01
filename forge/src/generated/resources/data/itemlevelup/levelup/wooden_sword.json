@@ -1,0 +1,8 @@
+{
+  "item": "minecraft:wooden_sword",
+  "provider": {
+    "valid_actions": [
+      "attack"
+    ]
+  }
+}
