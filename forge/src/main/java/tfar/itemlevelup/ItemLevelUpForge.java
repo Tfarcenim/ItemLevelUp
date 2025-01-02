@@ -1,13 +1,17 @@
 package tfar.itemlevelup;
 
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -16,6 +20,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import tfar.itemlevelup.client.ClientPacketHandler;
 import tfar.itemlevelup.client.ModClientForge;
 import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.LevelUpInfo;
@@ -23,6 +28,8 @@ import tfar.itemlevelup.data.LevelUpManager;
 import tfar.itemlevelup.datagen.ModDatagen;
 import tfar.itemlevelup.network.client.S2CLevelUpInfoPacket;
 import tfar.itemlevelup.platform.Services;
+
+import java.util.Map;
 
 @Mod(ItemLevelUp.MOD_ID)
 public class ItemLevelUpForge {
@@ -38,6 +45,7 @@ public class ItemLevelUpForge {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onBlockBreak);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onAttack);
         MinecraftForge.EVENT_BUS.addListener(this::onDataSync);
+        MinecraftForge.EVENT_BUS.addListener(this::addModifiers);
         bus.addListener(ModDatagen::gather);
         if (FMLEnvironment.dist.isClient()) {
             ModClientForge.init(bus);
@@ -97,6 +105,23 @@ public class ItemLevelUpForge {
                 }
             }
         }
+    }
+
+    private void addModifiers(ItemAttributeModifierEvent event) {
+        ItemStack stack = event.getItemStack();
+        EquipmentSlot slot = event.getSlotType();
+        LevelUpInfo info = getMap().get(stack.getItem());
+        if (info != null && slot == EquipmentSlot.MAINHAND) {
+            info.getModifiers(event::addModifier,PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY));
+        }
+    }
+
+    static Map<Item,LevelUpInfo> getMap() {
+        if (ItemLevelUp.manager != null)return ItemLevelUp.manager.getLevelUpProviders();
+        else if (ClientPacketHandler.MAP != null) {
+            return ClientPacketHandler.MAP;
+        }
+        return Map.of();
     }
 
     private void reload(AddReloadListenerEvent event) {

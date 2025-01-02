@@ -9,6 +9,9 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import tfar.itemlevelup.ItemLevelUp;
 import tfar.itemlevelup.data.Action;
 import tfar.itemlevelup.data.LevelUpManager;
+import tfar.itemlevelup.data.LevelUpReward;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
 import tfar.itemlevelup.data.scales.config.LinearScaleConfiguration;
 import tfar.itemlevelup.data.scales.config.QuadraticScaleConfiguration;
@@ -111,6 +115,7 @@ public class LevelUpProvider implements DataProvider {
         LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(item)
                 .addActions(Action.MINE_BLOCK)
                 .withConfig(basicLinear)
+                .addReward(new LevelUpReward(Attributes.ATTACK_DAMAGE,.25, AttributeModifier.Operation.ADDITION))
                 .build(consumer, ItemLevelUp.id(path));
     }
 
@@ -121,6 +126,7 @@ public class LevelUpProvider implements DataProvider {
         LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(item)
                 .addActions(Action.ATTACK)
                 .withConfig(basicLinear)
+                .addReward(new LevelUpReward(Attributes.ATTACK_DAMAGE,.25, AttributeModifier.Operation.ADDITION))
                 .build(consumer, ItemLevelUp.id(path));
     }
 

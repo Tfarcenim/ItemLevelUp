@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import tfar.itemlevelup.data.Action;
+import tfar.itemlevelup.data.LevelUpReward;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
 import tfar.itemlevelup.data.scales.ScaleType;
 import tfar.itemlevelup.data.scales.config.ScaleConfiguration;
@@ -40,11 +41,17 @@ public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends Sc
         return this;
     }
 
-    public void build(Consumer<FinishedLevelUpInfo> consumer,ResourceLocation location) {
-        consumer.accept(new Result(location,item,infoBuilder));
+    public LevelUpProviderBuilder<SC,ST> addReward(LevelUpReward reward) {
+        infoBuilder.rewards.add(reward);
+        return this;
     }
 
-    public record Result(ResourceLocation id,Item tool,LevelUpInfoBuilder infoBuilder) implements FinishedLevelUpInfo {
+
+    public void build(Consumer<FinishedLevelUpInfo> consumer,ResourceLocation location) {
+        consumer.accept(new Result<>(location,item,infoBuilder));
+    }
+
+    public record Result<SC extends ScaleConfiguration, ST extends ScaleType<SC>>(ResourceLocation id,Item tool,LevelUpInfoBuilder<SC,ST>  infoBuilder) implements FinishedLevelUpInfo {
 
         public void serialize(JsonObject json) {
             json.addProperty("item", BuiltInRegistries.ITEM.getKey(tool).toString());
