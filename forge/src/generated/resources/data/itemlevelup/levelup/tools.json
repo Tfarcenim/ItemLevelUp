@@ -1,0 +1,50 @@
+{
+  "items": [
+    "minecraft:diamond_hoe",
+    "minecraft:wooden_pickaxe",
+    "minecraft:netherite_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:golden_axe",
+    "minecraft:stone_hoe",
+    "minecraft:iron_shovel",
+    "minecraft:diamond_axe",
+    "minecraft:stone_axe",
+    "minecraft:stone_shovel",
+    "minecraft:iron_hoe",
+    "minecraft:golden_shovel",
+    "minecraft:wooden_hoe",
+    "minecraft:netherite_axe",
+    "minecraft:netherite_hoe",
+    "minecraft:wooden_shovel",
+    "minecraft:stone_pickaxe",
+    "minecraft:iron_pickaxe",
+    "minecraft:golden_hoe",
+    "minecraft:wooden_axe",
+    "minecraft:iron_axe",
+    "minecraft:golden_pickaxe",
+    "minecraft:netherite_shovel",
+    "minecraft:diamond_shovel"
+  ],
+  "provider": {
+    "max_level": 15,
+    "rewards": [
+      {
+        "attribute": "minecraft:generic.attack_damage",
+        "increase_per_level": 0.25,
+        "operation": "ADDITION",
+        "slots": [
+          "MAINHAND"
+        ]
+      }
+    ],
+    "scale": {
+      "type": "linear",
+      "config": {
+        "a": 10
+      }
+    },
+    "valid_actions": [
+      "mine_block"
+    ]
+  }
+}

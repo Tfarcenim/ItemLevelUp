@@ -1,19 +1,19 @@
 package tfar.itemlevelup.datagen;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.ibm.icu.impl.locale.XCldrStub;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tfar.itemlevelup.ItemLevelUp;
@@ -22,15 +22,11 @@ import tfar.itemlevelup.data.LevelUpManager;
 import tfar.itemlevelup.data.LevelUpReward;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
 import tfar.itemlevelup.data.scales.config.LinearScaleConfiguration;
-import tfar.itemlevelup.data.scales.config.QuadraticScaleConfiguration;
 import tfar.itemlevelup.data.scales.types.LinearScaleType;
-import tfar.itemlevelup.data.scales.types.QuadraticScaleType;
 import tfar.itemlevelup.data.scales.ScaleTypes;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -77,57 +73,67 @@ public class LevelUpProvider implements DataProvider {
     }
 
     protected void registerInfos(Consumer<FinishedLevelUpInfo> consumer) {
-        simpleTool(consumer,Items.GOLDEN_AXE);
-        simpleTool(consumer,Items.GOLDEN_PICKAXE);
-        simpleTool(consumer,Items.GOLDEN_SHOVEL);
-        simpleSword(consumer,Items.GOLDEN_SWORD);
 
-        simpleTool(consumer,Items.WOODEN_AXE);
-        simpleTool(consumer,Items.WOODEN_PICKAXE);
-        simpleTool(consumer,Items.WOODEN_SHOVEL);
-        simpleSword(consumer,Items.WOODEN_SWORD);
-
-        simpleTool(consumer,Items.STONE_AXE);
-        simpleTool(consumer,Items.STONE_PICKAXE);
-        simpleTool(consumer,Items.STONE_SHOVEL);
-        simpleSword(consumer,Items.STONE_SWORD);
-
-        simpleTool(consumer,Items.IRON_AXE);
-        simpleTool(consumer,Items.IRON_PICKAXE);
-        simpleTool(consumer,Items.IRON_SHOVEL);
-        simpleSword(consumer,Items.IRON_SWORD);
-
-        simpleTool(consumer,Items.DIAMOND_AXE);
-        simpleTool(consumer,Items.DIAMOND_PICKAXE);
-        simpleTool(consumer,Items.DIAMOND_SHOVEL);
-        simpleSword(consumer,Items.DIAMOND_SWORD);
-
-        simpleTool(consumer,Items.NETHERITE_AXE);
-        simpleTool(consumer,Items.NETHERITE_PICKAXE);
-        simpleTool(consumer,Items.NETHERITE_SHOVEL);
-        simpleSword(consumer,Items.NETHERITE_SWORD);
+        applyDefaultSwords(consumer);
+        applyDefaultTools(consumer);
+        applyArmorSets(consumer);
     }
 
-    protected void simpleTool(Consumer<FinishedLevelUpInfo> consumer,Item item) {
-        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
+    protected void applyDefaultTools(Consumer<FinishedLevelUpInfo> consumer) {
+        LevelUpProviderBuilder<LinearScaleConfiguration, LinearScaleType> builder = LevelUpProviderBuilder.create();
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof DiggerItem) {
+                builder.addItems(item);
+            }
+        }
         ConfiguredScale<LinearScaleConfiguration, LinearScaleType> basicLinear = new ConfiguredScale<>(ScaleTypes.LINEAR,new LinearScaleConfiguration(10,0));
 
-        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(item)
-                .addActions(Action.MINE_BLOCK)
+        builder.addActions(Action.MINE_BLOCK)
                 .withConfig(basicLinear)
-                .addReward(new LevelUpReward(Attributes.ATTACK_DAMAGE,.25, AttributeModifier.Operation.ADDITION))
-                .build(consumer, ItemLevelUp.id(path));
+                .addReward(new LevelUpReward(Attributes.ATTACK_DAMAGE,.25, AttributeModifier.Operation.ADDITION,Set.of(EquipmentSlot.MAINHAND)));
+
+        builder.build(consumer,ItemLevelUp.id("tools"));
     }
 
-    protected void simpleSword(Consumer<FinishedLevelUpInfo> consumer,Item item) {
-        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
+    protected void applyDefaultSwords(Consumer<FinishedLevelUpInfo> consumer) {
+        LevelUpProviderBuilder<LinearScaleConfiguration, LinearScaleType> builder = LevelUpProviderBuilder.create();
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof SwordItem) {
+                builder.addItems(item);
+            }
+        }
         ConfiguredScale<LinearScaleConfiguration, LinearScaleType> basicLinear = new ConfiguredScale<>(ScaleTypes.LINEAR,new LinearScaleConfiguration(10,0));
 
-        LevelUpProviderBuilder.<LinearScaleConfiguration, LinearScaleType>createLevelUp(item)
-                .addActions(Action.ATTACK)
+        builder.addActions(Action.ATTACK)
                 .withConfig(basicLinear)
-                .addReward(new LevelUpReward(Attributes.ATTACK_DAMAGE,.25, AttributeModifier.Operation.ADDITION))
-                .build(consumer, ItemLevelUp.id(path));
+                .addReward(new LevelUpReward(Attributes.ATTACK_DAMAGE,.25, AttributeModifier.Operation.ADDITION,Set.of(EquipmentSlot.MAINHAND)));
+
+        builder.build(consumer,ItemLevelUp.id("sword"));
     }
 
+    protected void applyArmorSets(Consumer<FinishedLevelUpInfo> consumer) {
+        ImmutableMultimap.Builder<EquipmentSlot,ArmorItem> build = ImmutableMultimap.builder();
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof ArmorItem armorItem) {
+                build.put(armorItem.getEquipmentSlot(),armorItem);
+            }
+        }
+        ImmutableMultimap<EquipmentSlot,ArmorItem> armorItems = build.build();
+
+        for (EquipmentSlot equipmentSlot : armorItems.keySet()) {
+            LevelUpProviderBuilder<LinearScaleConfiguration, LinearScaleType> builder = LevelUpProviderBuilder.create();
+            ImmutableCollection<ArmorItem> ai = armorItems.get(equipmentSlot);
+            builder.addItems(ai.toArray(ArmorItem[]::new));
+
+            ConfiguredScale<LinearScaleConfiguration, LinearScaleType> basicLinear = new ConfiguredScale<>(ScaleTypes.LINEAR,new LinearScaleConfiguration(100,0));
+
+            builder.addActions(Action.BLOCK_DAMAGE)
+                    .withConfig(basicLinear)
+                    .addReward(new LevelUpReward(Attributes.ARMOR_TOUGHNESS,.25, AttributeModifier.Operation.ADDITION,Set.of(equipmentSlot)));
+            builder.build(consumer,ItemLevelUp.id(equipmentSlot.getName()+ "_armor"));
+        }
+
+
+
+    }
 }

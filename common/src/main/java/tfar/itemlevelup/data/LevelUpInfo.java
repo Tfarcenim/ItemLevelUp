@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import tfar.itemlevelup.data.scales.ConfiguredScale;
@@ -23,10 +24,12 @@ public record LevelUpInfo(Set<Action> validActions, ConfiguredScale<?,?> scale, 
     public static final String MAX_LEVEL = "max_level";
     public static final String REWARDS = "rewards";
 
-    public void getModifiers(BiConsumer<Attribute, AttributeModifier> consumer,int level) {
+    public void getModifiers(BiConsumer<Attribute, AttributeModifier> consumer, int level, EquipmentSlot slot) {
         for (LevelUpReward levelUpReward : levelUpRewards) {
-            AttributeModifier modifier = levelUpReward.createModifier(level);
-            consumer.accept(levelUpReward.attribute(),modifier);
+            if (levelUpReward.slots().contains(slot)) {
+                AttributeModifier modifier = levelUpReward.createModifier(level);
+                consumer.accept(levelUpReward.attribute(), modifier);
+            }
         }
     }
 

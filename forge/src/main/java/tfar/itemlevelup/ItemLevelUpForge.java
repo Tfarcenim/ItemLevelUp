@@ -1,9 +1,11 @@
 package tfar.itemlevelup;
 
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -46,6 +49,7 @@ public class ItemLevelUpForge {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,this::onAttack);
         MinecraftForge.EVENT_BUS.addListener(this::onDataSync);
         MinecraftForge.EVENT_BUS.addListener(this::addModifiers);
+        MinecraftForge.EVENT_BUS.addListener(this::onHurt);
         bus.addListener(ModDatagen::gather);
         if (FMLEnvironment.dist.isClient()) {
             ModClientForge.init(bus);
@@ -107,12 +111,29 @@ public class ItemLevelUpForge {
         }
     }
 
+    static final EquipmentSlot[] armor = new EquipmentSlot[]{EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET};
+
+    void onHurt(LivingHurtEvent event) {
+        DamageSource source = event.getSource();
+        if (source.is(DamageTypeTags.BYPASSES_ARMOR)) return;
+        LivingEntity attacked = event.getEntity();
+        for (EquipmentSlot slot : armor) {
+            ItemStack armor = attacked.getItemBySlot(slot);
+            LevelUpInfo info = ItemLevelUp.manager.getLevelUpProviders().get(armor.getItem());
+            if (info != null) {
+                if (info.validActions().contains(Action.BLOCK_DAMAGE)) {
+                    addXp(info,armor, (long) event.getAmount());
+                }
+            }
+        }
+    }
+
     private void addModifiers(ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
         EquipmentSlot slot = event.getSlotType();
         LevelUpInfo info = getMap().get(stack.getItem());
-        if (info != null && slot == EquipmentSlot.MAINHAND) {
-            info.getModifiers(event::addModifier,PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY));
+        if (info != null) {
+            info.getModifiers(event::addModifier,PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY),slot);
         }
     }
 

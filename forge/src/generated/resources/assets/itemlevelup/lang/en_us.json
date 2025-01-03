@@ -1,0 +1,9 @@
+{
+  "text.itemlevelup.xp": "XP : %s / %s",
+  "text.levelup.level": "Level : %s",
+  "text.levelup.level.max": "Level : %s (MAX)",
+  "text.levelup.scaling": "Level Scaling : %s",
+  "text.levelup.scaling.constant": "Constant",
+  "text.levelup.scaling.linear": "Linear",
+  "text.levelup.scaling.quadratic": "Quadratic"
+}

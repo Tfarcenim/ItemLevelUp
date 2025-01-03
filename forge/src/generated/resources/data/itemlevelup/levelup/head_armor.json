@@ -1,0 +1,33 @@
+{
+  "items": [
+    "minecraft:golden_helmet",
+    "minecraft:diamond_helmet",
+    "minecraft:chainmail_helmet",
+    "minecraft:iron_helmet",
+    "minecraft:leather_helmet",
+    "minecraft:netherite_helmet",
+    "minecraft:turtle_helmet"
+  ],
+  "provider": {
+    "max_level": 15,
+    "rewards": [
+      {
+        "attribute": "minecraft:generic.armor_toughness",
+        "increase_per_level": 0.25,
+        "operation": "ADDITION",
+        "slots": [
+          "HEAD"
+        ]
+      }
+    ],
+    "scale": {
+      "type": "linear",
+      "config": {
+        "a": 100
+      }
+    },
+    "valid_actions": [
+      "block_damage"
+    ]
+  }
+}

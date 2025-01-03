@@ -1,0 +1,32 @@
+{
+  "items": [
+    "minecraft:golden_chestplate",
+    "minecraft:netherite_chestplate",
+    "minecraft:chainmail_chestplate",
+    "minecraft:leather_chestplate",
+    "minecraft:diamond_chestplate",
+    "minecraft:iron_chestplate"
+  ],
+  "provider": {
+    "max_level": 15,
+    "rewards": [
+      {
+        "attribute": "minecraft:generic.armor_toughness",
+        "increase_per_level": 0.25,
+        "operation": "ADDITION",
+        "slots": [
+          "CHEST"
+        ]
+      }
+    ],
+    "scale": {
+      "type": "linear",
+      "config": {
+        "a": 100
+      }
+    },
+    "valid_actions": [
+      "block_damage"
+    ]
+  }
+}

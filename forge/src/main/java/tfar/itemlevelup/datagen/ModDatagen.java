@@ -18,7 +18,6 @@ public class ModDatagen {
         boolean server = event.includeServer();
         boolean client = event.includeClient();
         generator.addProvider(server,new LevelUpProvider(output));
-
-
+        generator.addProvider(client,new ModLangProvider(output));
     }
 }

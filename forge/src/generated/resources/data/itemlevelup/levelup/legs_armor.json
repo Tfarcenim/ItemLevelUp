@@ -1,0 +1,32 @@
+{
+  "items": [
+    "minecraft:iron_leggings",
+    "minecraft:diamond_leggings",
+    "minecraft:leather_leggings",
+    "minecraft:netherite_leggings",
+    "minecraft:golden_leggings",
+    "minecraft:chainmail_leggings"
+  ],
+  "provider": {
+    "max_level": 15,
+    "rewards": [
+      {
+        "attribute": "minecraft:generic.armor_toughness",
+        "increase_per_level": 0.25,
+        "operation": "ADDITION",
+        "slots": [
+          "LEGS"
+        ]
+      }
+    ],
+    "scale": {
+      "type": "linear",
+      "config": {
+        "a": 100
+      }
+    },
+    "valid_actions": [
+      "block_damage"
+    ]
+  }
+}

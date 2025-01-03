@@ -1,0 +1,32 @@
+{
+  "items": [
+    "minecraft:iron_sword",
+    "minecraft:diamond_sword",
+    "minecraft:netherite_sword",
+    "minecraft:wooden_sword",
+    "minecraft:stone_sword",
+    "minecraft:golden_sword"
+  ],
+  "provider": {
+    "max_level": 15,
+    "rewards": [
+      {
+        "attribute": "minecraft:generic.attack_damage",
+        "increase_per_level": 0.25,
+        "operation": "ADDITION",
+        "slots": [
+          "MAINHAND"
+        ]
+      }
+    ],
+    "scale": {
+      "type": "linear",
+      "config": {
+        "a": 10
+      }
+    },
+    "valid_actions": [
+      "attack"
+    ]
+  }
+}

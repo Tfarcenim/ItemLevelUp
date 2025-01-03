@@ -1,5 +1,6 @@
 package tfar.itemlevelup.datagen;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -10,23 +11,30 @@ import tfar.itemlevelup.data.scales.ConfiguredScale;
 import tfar.itemlevelup.data.scales.ScaleType;
 import tfar.itemlevelup.data.scales.config.ScaleConfiguration;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends ScaleType<SC>> {
 
-    private final Item item;
+    private final Set<Item> items = new HashSet<>();
     private final LevelUpInfoBuilder<SC,ST> infoBuilder = new LevelUpInfoBuilder<>();
 
-    public LevelUpProviderBuilder(Item item) {
-        this.item = item;
+    public LevelUpProviderBuilder(){}
+
+    public static <SC extends ScaleConfiguration, ST extends ScaleType<SC>> LevelUpProviderBuilder<SC,ST> create() {
+        return new LevelUpProviderBuilder<>();
     }
 
-    public static <SC extends ScaleConfiguration, ST extends ScaleType<SC>> LevelUpProviderBuilder<SC,ST> createLevelUp(Item item) {
-        return new LevelUpProviderBuilder<>(item);
+    public LevelUpProviderBuilder<SC,ST> addItems(Item... items) {
+        Collections.addAll(this.items, items);
+        return this;
     }
 
-    public LevelUpProviderBuilder<SC,ST> addActions(Action... actions) {
+
+        public LevelUpProviderBuilder<SC,ST> addActions(Action... actions) {
         infoBuilder.validActions.addAll(List.of(actions));
         return this;
     }
@@ -48,13 +56,17 @@ public class LevelUpProviderBuilder<SC extends ScaleConfiguration, ST extends Sc
 
 
     public void build(Consumer<FinishedLevelUpInfo> consumer,ResourceLocation location) {
-        consumer.accept(new Result<>(location,item,infoBuilder));
+        consumer.accept(new Result<>(location, items,infoBuilder));
     }
 
-    public record Result<SC extends ScaleConfiguration, ST extends ScaleType<SC>>(ResourceLocation id,Item tool,LevelUpInfoBuilder<SC,ST>  infoBuilder) implements FinishedLevelUpInfo {
+    public record Result<SC extends ScaleConfiguration, ST extends ScaleType<SC>>(ResourceLocation id, Set<Item> tools, LevelUpInfoBuilder<SC,ST>  infoBuilder) implements FinishedLevelUpInfo {
 
         public void serialize(JsonObject json) {
-            json.addProperty("item", BuiltInRegistries.ITEM.getKey(tool).toString());
+            JsonArray itemArray = new JsonArray(tools.size());
+
+            tools.forEach(item -> itemArray.add(BuiltInRegistries.ITEM.getKey(item).toString()));
+
+            json.add("items", itemArray);
             json.add("provider",infoBuilder.toJson());
         }
 

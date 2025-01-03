@@ -17,7 +17,7 @@ import java.util.Set;
 public class LevelUpInfoBuilder<SC extends ScaleConfiguration, ST extends ScaleType<SC>> {
     Set<Action> validActions = new HashSet<>();
     ConfiguredScale<SC,ST> configuredScale;
-    int maxLevel = 255;
+    int maxLevel = 15;
     List<LevelUpReward> rewards = new ArrayList<>();
 
     JsonObject toJson() {

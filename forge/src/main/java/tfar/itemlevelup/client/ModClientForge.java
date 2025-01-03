@@ -18,6 +18,8 @@ public class ModClientForge {
         MinecraftForge.EVENT_BUS.addListener(ModClientForge::tooltip);
     }
 
+
+
     static void tooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         List<Component> tooltips = event.getToolTip();
@@ -26,15 +28,15 @@ public class ModClientForge {
 
         if (levelUpInfo != null) {
             int level =  PoorMansDataComponents.getOrDefaultI(stack,Constants.LEVEL_KEY);
-            boolean notMax = level < levelUpInfo.maxLevel();
-            if (notMax) {
+            boolean canLevel = level < levelUpInfo.maxLevel();
+            if (canLevel) {
                 long nextRequirement = levelUpInfo.scale().compute(level + 1);
-                tooltips.add(Component.literal("XP : " + PoorMansDataComponents.getOrDefaultJ(stack, Constants.XP_KEY) +" / "+ nextRequirement));
+                tooltips.add(ClientPacketHandler.getXPLine(PoorMansDataComponents.getOrDefaultJ(stack, Constants.XP_KEY),nextRequirement));
                 if (event.getFlags().isAdvanced()) {
-                    tooltips.add(Component.literal("Scaling Type : "+ ScaleTypes.reverseLookup(levelUpInfo.scale().scaleType())).withStyle(ChatFormatting.YELLOW));
+                    tooltips.add(ClientPacketHandler.getXPScalingLine(ScaleTypes.reverseLookup(levelUpInfo.scale().scaleType())).withStyle(ChatFormatting.YELLOW));
                 }
             }
-            tooltips.add(Component.literal("Level : " + level + (notMax ? "" : " (MAX)")));
+            tooltips.add(ClientPacketHandler.getLevelLine(level,!canLevel));
         }
     }
 }

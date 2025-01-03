@@ -1,0 +1,32 @@
+{
+  "items": [
+    "minecraft:diamond_boots",
+    "minecraft:netherite_boots",
+    "minecraft:leather_boots",
+    "minecraft:golden_boots",
+    "minecraft:iron_boots",
+    "minecraft:chainmail_boots"
+  ],
+  "provider": {
+    "max_level": 15,
+    "rewards": [
+      {
+        "attribute": "minecraft:generic.armor_toughness",
+        "increase_per_level": 0.25,
+        "operation": "ADDITION",
+        "slots": [
+          "FEET"
+        ]
+      }
+    ],
+    "scale": {
+      "type": "linear",
+      "config": {
+        "a": 100
+      }
+    },
+    "valid_actions": [
+      "block_damage"
+    ]
+  }
+}
